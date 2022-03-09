@@ -3,3 +3,49 @@ type ExampleEntity @entity {
   count: BigInt!
   upalaId: Bytes! # address
 }
+
+# Users
+
+type UpalaID @entity {
+    id: ID!  # user Upala ID
+}
+
+type Delegate @entity {
+    id: ID!  # delegate Ethereum address
+    isOwner: Boolean!  # owner is delegate too (per protocol)
+    upalaID: UpalaID!
+}
+
+# Pools
+
+type Pool @entity {
+    # on pool creation
+    id: ID!  # transaction hash (as recommended by Graph docs)
+    poolAddress: Bytes!  # pool address (also used for subgraph housekeeping???)
+    poolFactoryAddress: Bytes!  # is used to select pool ABI
+    
+    # monitors ownership at creation and on OwnershipTransferred
+    # OwnershipTransferred event at Ownable contract
+    owner: Bytes
+    
+    # base score
+    baseScore: BigInt  # uint256
+    # monitors DAI contract transfer event
+    balance:  BigInt  # uint256
+    metadata: String  # metadata json
+    isApproved: Boolean  # admin can switch poolFactories on and off
+}
+
+type ScoreBundle @entity {
+    id: ID!  # score bundle hash (and root if Merkle tree)
+    timestamp: BigInt!  # uint256
+    isDeleted: Boolean!
+    pool: Pool!
+}
+
+# DApps
+
+type DApp @entity {  # need many-to-many relation?
+    id: ID!  # dapp address
+    approvedPools: [Pool!]  # todo one-to-many
+}

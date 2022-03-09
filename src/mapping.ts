@@ -14,7 +14,7 @@ import {
   NewTreasury,
   OwnershipTransferred
 } from "../generated/Upala/Upala"
-import { ExampleEntity } from "../generated/schema"
+import { ExampleEntity, Pool } from "../generated/schema"
 
 export function handleExploded(event: Exploded): void {
   // Entities can be loaded from the store using a string ID; this ID
@@ -86,7 +86,12 @@ export function handleNewIdentity(event: NewIdentity): void {}
 
 export function handleNewIdentityOwner(event: NewIdentityOwner): void {}
 
-export function handleNewPool(event: NewPool): void {}
+export function handleNewPool(event: NewPool): void {
+  let pool = new Pool(event.transaction.hash.toHex() + "-" + event.logIndex.toString())
+  pool.poolAddress = event.params.poolAddress
+  pool.poolFactoryAddress = event.params.factory
+  pool.save()
+}
 
 export function handleNewPoolFactoryStatus(event: NewPoolFactoryStatus): void {}
 
