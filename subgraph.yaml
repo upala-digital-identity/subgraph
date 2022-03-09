@@ -1,0 +1,56 @@
+specVersion: 0.0.1
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum
+    name: Upala
+    network: rinkeby
+    source:
+      address: "0xBE03a3c105E595652a7245FA504e381aAA59F95a"
+      abi: Upala
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Exploded
+        - NewAttackWindow
+        - NewDAppStatus
+        - NewDelegateStatus
+        - NewExecutionWindow
+        - NewExplosionFeePercent
+        - NewIdentity
+        - NewIdentityOwner
+        - NewPool
+        - NewPoolFactoryStatus
+        - NewTreasury
+        - OwnershipTransferred
+      abis:
+        - name: Upala
+          file: ./abis/Upala.json
+      eventHandlers:
+        - event: Exploded(address)
+          handler: handleExploded
+        - event: NewAttackWindow(uint256)
+          handler: handleNewAttackWindow
+        - event: NewDAppStatus(address,bool)
+          handler: handleNewDAppStatus
+        - event: NewDelegateStatus(address,address,bool)
+          handler: handleNewDelegateStatus
+        - event: NewExecutionWindow(uint256)
+          handler: handleNewExecutionWindow
+        - event: NewExplosionFeePercent(uint8)
+          handler: handleNewExplosionFeePercent
+        - event: NewIdentity(address,address)
+          handler: handleNewIdentity
+        - event: NewIdentityOwner(address,address)
+          handler: handleNewIdentityOwner
+        - event: NewPool(address,address)
+          handler: handleNewPool
+        - event: NewPoolFactoryStatus(address,bool)
+          handler: handleNewPoolFactoryStatus
+        - event: NewTreasury(address)
+          handler: handleNewTreasury
+        - event: OwnershipTransferred(indexed address,indexed address)
+          handler: handleOwnershipTransferred
+      file: ./src/mapping.ts
