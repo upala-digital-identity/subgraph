@@ -8,8 +8,9 @@ dataSources:
     name: Upala
     network: rinkeby
     source:
-      address: "0xBE03a3c105E595652a7245FA504e381aAA59F95a"
+      address: "0xDb5827C069593049398a7c6374557fD21Bcb8204"
       abi: Upala
+      startBlock: 10455600
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
