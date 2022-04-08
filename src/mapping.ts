@@ -15,6 +15,7 @@ import {
   OwnershipTransferred
 } from "../generated/Upala/Upala"
 import { ExampleEntity, Pool, UpalaID, Delegate } from "../generated/schema"
+import { BundledScoresPool } from '../generated/templates'
 
 export function handleExploded(event: Exploded): void {
   // Entities can be loaded from the store using a string ID; this ID
@@ -95,10 +96,16 @@ export function handleNewIdentityOwner(event: NewIdentityOwner): void {}
 
 export function handleNewPool(event: NewPool): void {
   let pool = new Pool(event.params.poolAddress.toHex())
-  //let pool = new Pool(event.transaction.hash.toHex() + "-" + event.logIndex.toString())
-  pool.poolAddress = event.params.poolAddress
+  // let pool = new Pool(event.transaction.hash.toHex() + "-" + event.logIndex.toString())
+  // pool.poolAddress = event.params.poolAddress
   pool.poolFactoryAddress = event.params.factory
+  pool.owner = event.params.poolManager
+  pool.baseScore = BigInt.fromI32(0)  // todo see uniswap zero helper
+  pool.balance = BigInt.fromI32(0)  // todo see uniswap zero helper
+  pool.metadata = ''
+  pool.isApproved = true
   pool.save()
+  BundledScoresPool.create(event.params.poolAddress)
 }
 
 export function handleNewPoolFactoryStatus(event: NewPoolFactoryStatus): void {}

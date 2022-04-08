@@ -20,13 +20,12 @@ type Delegate @entity {
 
 type Pool @entity {
     # on pool creation
-    id: ID!  # transaction hash (as recommended by Graph docs)
-    poolAddress: Bytes!  # pool address (also used for subgraph housekeeping???)
+    id: ID!  # pool address
     poolFactoryAddress: Bytes!  # is used to select pool ABI
     
     # monitors ownership at creation and on OwnershipTransferred
     # OwnershipTransferred event at Ownable contract
-    owner: Bytes
+    owner: Bytes!
     
     # base score
     baseScore: BigInt  # uint256

@@ -157,8 +157,8 @@ export class Pool extends Entity {
     super();
     this.set("id", Value.fromString(id));
 
-    this.set("poolAddress", Value.fromBytes(Bytes.empty()));
     this.set("poolFactoryAddress", Value.fromBytes(Bytes.empty()));
+    this.set("owner", Value.fromBytes(Bytes.empty()));
   }
 
   save(): void {
@@ -187,15 +187,6 @@ export class Pool extends Entity {
     this.set("id", Value.fromString(value));
   }
 
-  get poolAddress(): Bytes {
-    let value = this.get("poolAddress");
-    return value!.toBytes();
-  }
-
-  set poolAddress(value: Bytes) {
-    this.set("poolAddress", Value.fromBytes(value));
-  }
-
   get poolFactoryAddress(): Bytes {
     let value = this.get("poolFactoryAddress");
     return value!.toBytes();
@@ -205,21 +196,13 @@ export class Pool extends Entity {
     this.set("poolFactoryAddress", Value.fromBytes(value));
   }
 
-  get owner(): Bytes | null {
+  get owner(): Bytes {
     let value = this.get("owner");
-    if (!value || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toBytes();
-    }
+    return value!.toBytes();
   }
 
-  set owner(value: Bytes | null) {
-    if (!value) {
-      this.unset("owner");
-    } else {
-      this.set("owner", Value.fromBytes(<Bytes>value));
-    }
+  set owner(value: Bytes) {
+    this.set("owner", Value.fromBytes(value));
   }
 
   get baseScore(): BigInt | null {

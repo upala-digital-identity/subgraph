@@ -191,8 +191,12 @@ export class NewPool__Params {
     return this._event.parameters[0].value.toAddress();
   }
 
-  get factory(): Address {
+  get poolManager(): Address {
     return this._event.parameters[1].value.toAddress();
+  }
+
+  get factory(): Address {
+    return this._event.parameters[2].value.toAddress();
   }
 }
 
@@ -483,18 +487,31 @@ export class Upala extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toAddress());
   }
 
-  registerPool(newPool: Address): boolean {
-    let result = super.call("registerPool", "registerPool(address):(bool)", [
-      ethereum.Value.fromAddress(newPool)
-    ]);
+  registerPool(newPool: Address, poolManager: Address): boolean {
+    let result = super.call(
+      "registerPool",
+      "registerPool(address,address):(bool)",
+      [
+        ethereum.Value.fromAddress(newPool),
+        ethereum.Value.fromAddress(poolManager)
+      ]
+    );
 
     return result[0].toBoolean();
   }
 
-  try_registerPool(newPool: Address): ethereum.CallResult<boolean> {
-    let result = super.tryCall("registerPool", "registerPool(address):(bool)", [
-      ethereum.Value.fromAddress(newPool)
-    ]);
+  try_registerPool(
+    newPool: Address,
+    poolManager: Address
+  ): ethereum.CallResult<boolean> {
+    let result = super.tryCall(
+      "registerPool",
+      "registerPool(address,address):(bool)",
+      [
+        ethereum.Value.fromAddress(newPool),
+        ethereum.Value.fromAddress(poolManager)
+      ]
+    );
     if (result.reverted) {
       return new ethereum.CallResult();
     }
@@ -567,6 +584,36 @@ export class ApproveDelegateCall__Outputs {
   _call: ApproveDelegateCall;
 
   constructor(call: ApproveDelegateCall) {
+    this._call = call;
+  }
+}
+
+export class ApproveDelegationCall extends ethereum.Call {
+  get inputs(): ApproveDelegationCall__Inputs {
+    return new ApproveDelegationCall__Inputs(this);
+  }
+
+  get outputs(): ApproveDelegationCall__Outputs {
+    return new ApproveDelegationCall__Outputs(this);
+  }
+}
+
+export class ApproveDelegationCall__Inputs {
+  _call: ApproveDelegationCall;
+
+  constructor(call: ApproveDelegationCall) {
+    this._call = call;
+  }
+
+  get upalaId(): Address {
+    return this._call.inputValues[0].value.toAddress();
+  }
+}
+
+export class ApproveDelegationCall__Outputs {
+  _call: ApproveDelegationCall;
+
+  constructor(call: ApproveDelegationCall) {
     this._call = call;
   }
 }
@@ -744,6 +791,10 @@ export class RegisterPoolCall__Inputs {
 
   get newPool(): Address {
     return this._call.inputValues[0].value.toAddress();
+  }
+
+  get poolManager(): Address {
+    return this._call.inputValues[1].value.toAddress();
   }
 }
 
@@ -961,6 +1012,32 @@ export class SetTreasuryCall__Outputs {
   _call: SetTreasuryCall;
 
   constructor(call: SetTreasuryCall) {
+    this._call = call;
+  }
+}
+
+export class StopDelegationCall extends ethereum.Call {
+  get inputs(): StopDelegationCall__Inputs {
+    return new StopDelegationCall__Inputs(this);
+  }
+
+  get outputs(): StopDelegationCall__Outputs {
+    return new StopDelegationCall__Outputs(this);
+  }
+}
+
+export class StopDelegationCall__Inputs {
+  _call: StopDelegationCall;
+
+  constructor(call: StopDelegationCall) {
+    this._call = call;
+  }
+}
+
+export class StopDelegationCall__Outputs {
+  _call: StopDelegationCall;
+
+  constructor(call: StopDelegationCall) {
     this._call = call;
   }
 }
