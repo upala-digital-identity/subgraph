@@ -29,8 +29,8 @@ type Pool @entity {
     
     # base score
     baseScore: BigInt  # uint256
-    # monitors DAI contract transfer event
-    balance:  BigInt  # uint256
+    # monitors DAI contract transfer event (todo - isn't it beter to check DAI)
+    # balance:  BigInt  # uint256
     metadata: String  # metadata json
     isApproved: Boolean  # admin can switch poolFactories on and off
 }

@@ -2,11 +2,22 @@ import {
     NewScoreBundleId, 
     MetaDataUpdate,
     ScoreBundleIdDeleted,
-    NewBaseScore
+    NewBaseScore,
+    OwnershipTransferred
 } from "../generated/templates/BundledScoresPool/BundledScoresPool"
-import { ScoreBundle } from "../generated/schema"
+import { Pool, ScoreBundle } from "../generated/schema"
+import { log } from '@graphprotocol/graph-ts'
 
-export function handleMetaDataUpdate(event: MetaDataUpdate): void {}
+export function handleMetaDataUpdate(event: MetaDataUpdate): void {
+    let poolAddress = event.address.toHex()
+    let pool = Pool.load(poolAddress)
+    if (pool != null) {
+        pool.metadata = event.params.metadata
+        pool.save()
+    } else {
+        log.error('Cannot load pool by address: {}', [poolAddress])
+    }
+}
 
 export function handleNewScoreBundleId(event: NewScoreBundleId): void {
     let scoreBundle = new ScoreBundle(event.params.newScoreBundleId.toHex())
@@ -16,8 +27,37 @@ export function handleNewScoreBundleId(event: NewScoreBundleId): void {
     scoreBundle.save()
 }
 
-export function handleScoreBundleIdDeleted(event: ScoreBundleIdDeleted): void {}
+export function handleScoreBundleIdDeleted(event: ScoreBundleIdDeleted): void {
+    let scoreBundleId = event.params.scoreBundleId.toHex()
+    let scoreBundle = ScoreBundle.load(scoreBundleId)
+    if (scoreBundle != null) {
+        scoreBundle.isDeleted = true
+        scoreBundle.save()
+    } else {
+        log.error('Cannot load score bundle Id: {}', [scoreBundleId])
+    }
+}
 
-export function handleNewBaseScore(event: NewBaseScore): void {}
+export function handleNewBaseScore(event: NewBaseScore): void {
+    let poolAddress = event.address.toHex()
+    let pool = Pool.load(poolAddress)
+    if (pool != null) {
+        pool.baseScore = event.params.newBaseScore
+        pool.save()
+    } else {
+        log.error('Cannot load pool by address: {}', [poolAddress])
+    }
+}
 
-// todo handle ownership transfer
+export function handleOwnershipTransferred(event: OwnershipTransferred): void {
+    let poolAddress = event.address.toHex()
+    let pool = Pool.load(poolAddress)
+    // first OwnershipTransferred event is called before pool template 
+    // is registered. Checking if owner already exists
+    if (pool != null && (pool.owner != event.params.newOwner)) {
+        pool.owner = event.params.newOwner
+        pool.save()
+    } else {
+        log.error('Cannot load pool by address: {}', [poolAddress])
+    }
+}

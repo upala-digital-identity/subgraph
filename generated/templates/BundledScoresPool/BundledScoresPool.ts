@@ -103,7 +103,7 @@ export class ScoreBundleIdDeleted__Params {
     this._event = event;
   }
 
-  get newScoreBundleId(): Bytes {
+  get scoreBundleId(): Bytes {
     return this._event.parameters[0].value.toBytes();
   }
 }

@@ -222,23 +222,6 @@ export class Pool extends Entity {
     }
   }
 
-  get balance(): BigInt | null {
-    let value = this.get("balance");
-    if (!value || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toBigInt();
-    }
-  }
-
-  set balance(value: BigInt | null) {
-    if (!value) {
-      this.unset("balance");
-    } else {
-      this.set("balance", Value.fromBigInt(<BigInt>value));
-    }
-  }
-
   get metadata(): string | null {
     let value = this.get("metadata");
     if (!value || value.kind == ValueKind.NULL) {

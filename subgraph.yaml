@@ -20,17 +20,6 @@ dataSources:
         - Pool
         - UpalaID
         - Delegate
-        # - Exploded
-        # - NewAttackWindow
-        # - NewDAppStatus
-        # - NewDelegateStatus
-        # - NewExecutionWindow
-        # - NewExplosionFeePercent
-        # - NewIdentityOwner
-        # - NewPool
-        # - NewPoolFactoryStatus
-        # - NewTreasury
-        # - OwnershipTransferred
       abis:
         - name: Upala
           file: ./abis/Upala.json
@@ -87,3 +76,5 @@ templates:
           handler: handleScoreBundleIdDeleted
         - event: NewBaseScore(uint256)
           handler: handleNewBaseScore
+        - event: OwnershipTransferred(indexed address,indexed address)
+          handler: handleOwnershipTransferred

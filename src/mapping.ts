@@ -101,7 +101,6 @@ export function handleNewPool(event: NewPool): void {
   pool.poolFactoryAddress = event.params.factory
   pool.owner = event.params.poolManager
   pool.baseScore = BigInt.fromI32(0)  // todo see uniswap zero helper
-  pool.balance = BigInt.fromI32(0)  // todo see uniswap zero helper
   pool.metadata = ''
   pool.isApproved = true
   pool.save()
