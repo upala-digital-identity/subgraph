@@ -27,11 +27,13 @@ dataSources:
         # Identity management
         - event: NewIdentity(address,address)
           handler: handleNewIdentity
-        - event: NewDelegate(address,address,bool)
+        - event: NewCandidateDelegate(address,address)
+          handler: handleNewCandidateDelegate
+        - event: NewDelegate(address,address)
           handler: handleNewDelegate
         - event: DelegateDeleted(address,address)
           handler: handleDelegateDeleted
-        - event: NewIdentityOwner(address,address)
+        - event: NewIdentityOwner(address,address,address)
           handler: handleNewIdentityOwner
         - event: Exploded(address)
           handler: handleExploded

@@ -68,6 +68,28 @@ export class NewAttackWindow__Params {
   }
 }
 
+export class NewCandidateDelegate extends ethereum.Event {
+  get params(): NewCandidateDelegate__Params {
+    return new NewCandidateDelegate__Params(this);
+  }
+}
+
+export class NewCandidateDelegate__Params {
+  _event: NewCandidateDelegate;
+
+  constructor(event: NewCandidateDelegate) {
+    this._event = event;
+  }
+
+  get upalaId(): Address {
+    return this._event.parameters[0].value.toAddress();
+  }
+
+  get delegate(): Address {
+    return this._event.parameters[1].value.toAddress();
+  }
+}
+
 export class NewDAppStatus extends ethereum.Event {
   get params(): NewDAppStatus__Params {
     return new NewDAppStatus__Params(this);
@@ -109,10 +131,6 @@ export class NewDelegate__Params {
 
   get delegate(): Address {
     return this._event.parameters[1].value.toAddress();
-  }
-
-  get isApproved(): boolean {
-    return this._event.parameters[2].value.toBoolean();
   }
 }
 
@@ -191,8 +209,12 @@ export class NewIdentityOwner__Params {
     return this._event.parameters[0].value.toAddress();
   }
 
-  get owner(): Address {
+  get oldOwner(): Address {
     return this._event.parameters[1].value.toAddress();
+  }
+
+  get newOwner(): Address {
+    return this._event.parameters[2].value.toAddress();
   }
 }
 
