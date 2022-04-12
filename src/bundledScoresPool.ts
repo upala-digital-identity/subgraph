@@ -6,7 +6,7 @@ import {
     OwnershipTransferred
 } from "../generated/templates/BundledScoresPool/BundledScoresPool"
 import { Pool, ScoreBundle } from "../generated/schema"
-import { log } from '@graphprotocol/graph-ts'
+import { dataSource, log } from '@graphprotocol/graph-ts'
 
 export function handleMetaDataUpdate(event: MetaDataUpdate): void {
     let poolAddress = event.address.toHex()
@@ -63,3 +63,5 @@ export function handleOwnershipTransferred(event: OwnershipTransferred): void {
         log.error('Cannot load pool by address: {}', [poolAddress])
     }
 }
+
+// dataSource.address() - get the address of this contract 

@@ -17,6 +17,7 @@ export class UpalaID extends Entity {
     this.set("id", Value.fromString(id));
 
     this.set("isExploded", Value.fromBoolean(false));
+    this.set("owner", Value.fromString(""));
   }
 
   save(): void {
@@ -53,6 +54,24 @@ export class UpalaID extends Entity {
   set isExploded(value: boolean) {
     this.set("isExploded", Value.fromBoolean(value));
   }
+
+  get owner(): string {
+    let value = this.get("owner");
+    return value!.toString();
+  }
+
+  set owner(value: string) {
+    this.set("owner", Value.fromString(value));
+  }
+
+  get delegates(): Array<string> {
+    let value = this.get("delegates");
+    return value!.toStringArray();
+  }
+
+  set delegates(value: Array<string>) {
+    this.set("delegates", Value.fromStringArray(value));
+  }
 }
 
 export class Delegate extends Entity {
@@ -61,6 +80,7 @@ export class Delegate extends Entity {
     this.set("id", Value.fromString(id));
 
     this.set("isOwner", Value.fromBoolean(false));
+    this.set("isApproved", Value.fromBoolean(false));
     this.set("upalaID", Value.fromString(""));
   }
 
@@ -97,6 +117,15 @@ export class Delegate extends Entity {
 
   set isOwner(value: boolean) {
     this.set("isOwner", Value.fromBoolean(value));
+  }
+
+  get isApproved(): boolean {
+    let value = this.get("isApproved");
+    return value!.toBoolean();
+  }
+
+  set isApproved(value: boolean) {
+    this.set("isApproved", Value.fromBoolean(value));
   }
 
   get upalaID(): string {

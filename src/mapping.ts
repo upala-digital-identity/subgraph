@@ -1,14 +1,17 @@
-import { BigInt } from "@graphprotocol/graph-ts"
+import { BigInt, store } from "@graphprotocol/graph-ts"
+
 import {
   Upala,
+  NewIdentity,
+  NewDelegate,
+  DelegateDeleted,
+  NewIdentityOwner,
   Exploded,
+
   NewAttackWindow,
   NewDAppStatus,
-  NewDelegate,
   NewExecutionWindow,
   NewExplosionFeePercent,
-  NewIdentity,
-  NewIdentityOwner,
   NewPool,
   NewPoolFactoryStatus,
   NewTreasury,
@@ -38,7 +41,10 @@ export function handleNewDelegate(event: NewDelegate): void {
   delegate.save()
 }
 
-export function handleDelegateDeleted(event: NewIdentityOwner): void {}
+export function handleDelegateDeleted(event: DelegateDeleted): void {
+  let delegate = event.params.delegate.toHex()
+  store.remove('Delegate', delegate)
+}
 
 export function handleNewIdentityOwner(event: NewIdentityOwner): void {}
 

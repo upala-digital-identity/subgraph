@@ -3,11 +3,14 @@
 type UpalaID @entity {
     id: ID!  # user Upala ID
     isExploded: Boolean!
+    owner: Delegate!
+    delegates: [Delegate!]! @derivedFrom(field: "upalaID")
 }
 
 type Delegate @entity {
     id: ID!  # delegate Ethereum address
     isOwner: Boolean!  # owner is delegate too (per protocol)
+    isApproved: Boolean!
     upalaID: UpalaID!
 }
 
