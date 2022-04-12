@@ -10,6 +10,28 @@ import {
   BigInt
 } from "@graphprotocol/graph-ts";
 
+export class DelegateDeleted extends ethereum.Event {
+  get params(): DelegateDeleted__Params {
+    return new DelegateDeleted__Params(this);
+  }
+}
+
+export class DelegateDeleted__Params {
+  _event: DelegateDeleted;
+
+  constructor(event: DelegateDeleted) {
+    this._event = event;
+  }
+
+  get upalaId(): Address {
+    return this._event.parameters[0].value.toAddress();
+  }
+
+  get delegate(): Address {
+    return this._event.parameters[1].value.toAddress();
+  }
+}
+
 export class Exploded extends ethereum.Event {
   get params(): Exploded__Params {
     return new Exploded__Params(this);
@@ -68,16 +90,16 @@ export class NewDAppStatus__Params {
   }
 }
 
-export class NewDelegateStatus extends ethereum.Event {
-  get params(): NewDelegateStatus__Params {
-    return new NewDelegateStatus__Params(this);
+export class NewDelegate extends ethereum.Event {
+  get params(): NewDelegate__Params {
+    return new NewDelegate__Params(this);
   }
 }
 
-export class NewDelegateStatus__Params {
-  _event: NewDelegateStatus;
+export class NewDelegate__Params {
+  _event: NewDelegate;
 
-  constructor(event: NewDelegateStatus) {
+  constructor(event: NewDelegate) {
     this._event = event;
   }
 

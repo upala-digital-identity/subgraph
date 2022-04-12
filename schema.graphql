@@ -1,13 +1,8 @@
-type ExampleEntity @entity {
-  id: ID!
-  count: BigInt!
-  upalaId: Bytes! # address
-}
-
 # Users
 
 type UpalaID @entity {
     id: ID!  # user Upala ID
+    isExploded: Boolean!
 }
 
 type Delegate @entity {

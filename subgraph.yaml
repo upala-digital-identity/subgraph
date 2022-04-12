@@ -24,22 +24,26 @@ dataSources:
         - name: Upala
           file: ./abis/Upala.json
       eventHandlers:
+        # Identity management
+        - event: NewIdentity(address,address)
+          handler: handleNewIdentity
+        - event: NewDelegate(address,address,bool)
+          handler: handleNewDelegate
+        - event: DelegateDeleted(address,address)
+          handler: handleDelegateDeleted
+        - event: NewIdentityOwner(address,address)
+          handler: handleNewIdentityOwner
         - event: Exploded(address)
           handler: handleExploded
+       
         - event: NewAttackWindow(uint256)
           handler: handleNewAttackWindow
         - event: NewDAppStatus(address,bool)
           handler: handleNewDAppStatus
-        - event: NewDelegateStatus(address,address,bool)
-          handler: handleNewDelegateStatus
         - event: NewExecutionWindow(uint256)
           handler: handleNewExecutionWindow
         - event: NewExplosionFeePercent(uint8)
           handler: handleNewExplosionFeePercent
-        - event: NewIdentity(address,address)
-          handler: handleNewIdentity
-        - event: NewIdentityOwner(address,address)
-          handler: handleNewIdentityOwner
         - event: NewPool(address,address,address)
           handler: handleNewPool
         - event: NewPoolFactoryStatus(address,bool)
