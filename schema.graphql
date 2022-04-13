@@ -16,13 +16,19 @@ type Delegate @entity {
 
 # Pools
 
+type PoolFactory @entity {
+    id: ID!  # pool factory address
+    isApproved: Boolean  # admin can switch poolFactories on and off
+    pools: [Pool!]! @derivedFrom(field: "poolFactory")
+}
+
 type Pool @entity {
     # on pool creation
     id: ID!  # pool address
-    poolFactoryAddress: Bytes!  # is used to select pool ABI
+    poolFactory: PoolFactory!  # is used to select pool ABI
     
     # monitors ownership at creation and on OwnershipTransferred
-    # OwnershipTransferred event at Ownable contract
+    # OwnershipTransferred event is at Ownable contract
     owner: Bytes!
     
     # base score
@@ -30,7 +36,7 @@ type Pool @entity {
     # monitors DAI contract transfer event (todo - isn't it beter to check DAI)
     # balance:  BigInt  # uint256
     metadata: String  # metadata json
-    isApproved: Boolean  # admin can switch poolFactories on and off
+    scoreBundles: [ScoreBundle!]! @derivedFrom(field: "pool")
 }
 
 type ScoreBundle @entity {
@@ -40,9 +46,9 @@ type ScoreBundle @entity {
     pool: Pool!
 }
 
-# DApps
+# DApps (future)
 
-type DApp @entity {  # need many-to-many relation?
-    id: ID!  # dapp address
-    approvedPools: [Pool!]  # todo one-to-many
-}
+# type DApp @entity {  # need many-to-many relation?
+#    id: ID!  # dapp address
+#    # approvedPools: [Pool!]  # todo one-to-many
+# }

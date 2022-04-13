@@ -138,12 +138,63 @@ export class Delegate extends Entity {
   }
 }
 
+export class PoolFactory extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save PoolFactory entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        "Cannot save PoolFactory entity with non-string ID. " +
+          'Considering using .toHex() to convert the "id" to a string.'
+      );
+      store.set("PoolFactory", id.toString(), this);
+    }
+  }
+
+  static load(id: string): PoolFactory | null {
+    return changetype<PoolFactory | null>(store.get("PoolFactory", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get isApproved(): boolean {
+    let value = this.get("isApproved");
+    return value!.toBoolean();
+  }
+
+  set isApproved(value: boolean) {
+    this.set("isApproved", Value.fromBoolean(value));
+  }
+
+  get pools(): Array<string> {
+    let value = this.get("pools");
+    return value!.toStringArray();
+  }
+
+  set pools(value: Array<string>) {
+    this.set("pools", Value.fromStringArray(value));
+  }
+}
+
 export class Pool extends Entity {
   constructor(id: string) {
     super();
     this.set("id", Value.fromString(id));
 
-    this.set("poolFactoryAddress", Value.fromBytes(Bytes.empty()));
+    this.set("poolFactory", Value.fromString(""));
     this.set("owner", Value.fromBytes(Bytes.empty()));
   }
 
@@ -173,13 +224,13 @@ export class Pool extends Entity {
     this.set("id", Value.fromString(value));
   }
 
-  get poolFactoryAddress(): Bytes {
-    let value = this.get("poolFactoryAddress");
-    return value!.toBytes();
+  get poolFactory(): string {
+    let value = this.get("poolFactory");
+    return value!.toString();
   }
 
-  set poolFactoryAddress(value: Bytes) {
-    this.set("poolFactoryAddress", Value.fromBytes(value));
+  set poolFactory(value: string) {
+    this.set("poolFactory", Value.fromString(value));
   }
 
   get owner(): Bytes {
@@ -225,13 +276,13 @@ export class Pool extends Entity {
     }
   }
 
-  get isApproved(): boolean {
-    let value = this.get("isApproved");
-    return value!.toBoolean();
+  get scoreBundles(): Array<string> {
+    let value = this.get("scoreBundles");
+    return value!.toStringArray();
   }
 
-  set isApproved(value: boolean) {
-    this.set("isApproved", Value.fromBoolean(value));
+  set scoreBundles(value: Array<string>) {
+    this.set("scoreBundles", Value.fromStringArray(value));
   }
 }
 
@@ -296,55 +347,5 @@ export class ScoreBundle extends Entity {
 
   set pool(value: string) {
     this.set("pool", Value.fromString(value));
-  }
-}
-
-export class DApp extends Entity {
-  constructor(id: string) {
-    super();
-    this.set("id", Value.fromString(id));
-  }
-
-  save(): void {
-    let id = this.get("id");
-    assert(id != null, "Cannot save DApp entity without an ID");
-    if (id) {
-      assert(
-        id.kind == ValueKind.STRING,
-        "Cannot save DApp entity with non-string ID. " +
-          'Considering using .toHex() to convert the "id" to a string.'
-      );
-      store.set("DApp", id.toString(), this);
-    }
-  }
-
-  static load(id: string): DApp | null {
-    return changetype<DApp | null>(store.get("DApp", id));
-  }
-
-  get id(): string {
-    let value = this.get("id");
-    return value!.toString();
-  }
-
-  set id(value: string) {
-    this.set("id", Value.fromString(value));
-  }
-
-  get approvedPools(): Array<string> | null {
-    let value = this.get("approvedPools");
-    if (!value || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toStringArray();
-    }
-  }
-
-  set approvedPools(value: Array<string> | null) {
-    if (!value) {
-      this.unset("approvedPools");
-    } else {
-      this.set("approvedPools", Value.fromStringArray(<Array<string>>value));
-    }
   }
 }

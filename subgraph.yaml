@@ -17,9 +17,10 @@ dataSources:
       apiVersion: 0.0.5
       language: wasm/assemblyscript
       entities:
-        - Pool
         - UpalaID
         - Delegate
+        - PoolFactory
+        - Pool
       abis:
         - name: Upala
           file: ./abis/Upala.json
@@ -37,7 +38,12 @@ dataSources:
           handler: handleNewIdentityOwner
         - event: Exploded(address)
           handler: handleExploded
-       
+        # Pools
+        - event: NewPoolFactoryStatus(address,bool)
+          handler: handleNewPoolFactoryStatus
+        - event: NewPool(address,address,address)
+          handler: handleNewPool
+        # Upala
         - event: NewAttackWindow(uint256)
           handler: handleNewAttackWindow
         - event: NewDAppStatus(address,bool)
@@ -46,10 +52,8 @@ dataSources:
           handler: handleNewExecutionWindow
         - event: NewExplosionFeePercent(uint8)
           handler: handleNewExplosionFeePercent
-        - event: NewPool(address,address,address)
-          handler: handleNewPool
-        - event: NewPoolFactoryStatus(address,bool)
-          handler: handleNewPoolFactoryStatus
+        
+        
         - event: NewTreasury(address)
           handler: handleNewTreasury
         - event: OwnershipTransferred(indexed address,indexed address)

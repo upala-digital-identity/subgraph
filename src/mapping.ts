@@ -8,7 +8,7 @@ import {
   DelegateDeleted,
   NewIdentityOwner,
   Exploded,
-
+  
   NewAttackWindow,
   NewDAppStatus,
   NewExecutionWindow,
@@ -18,10 +18,13 @@ import {
   NewTreasury,
   OwnershipTransferred
 } from "../generated/Upala/Upala"
-import { Pool, UpalaID, Delegate } from "../generated/schema"
+import { UpalaID, Delegate, PoolFactory, Pool } from "../generated/schema"
 import { BundledScoresPool } from '../generated/templates'
 
-// Identity management
+/******************
+IDENTITY MANAGEMENT
+******************/
+
 export function handleNewIdentity(event: NewIdentity): void {
   let upalaId = new UpalaID(event.params.upalaId.toHex())
   upalaId.isExploded = false
@@ -34,6 +37,7 @@ export function handleNewIdentity(event: NewIdentity): void {
   delegate.save()
 }
 
+// will also rewrite existing delegate if candidate choses another UpalaID 
 export function handleNewCandidateDelegate(event: NewCandidateDelegate): void {
   let delegate = new Delegate(event.params.delegate.toHex())
   let upalaId = new UpalaID(event.params.upalaId.toHex())
@@ -73,35 +77,44 @@ export function handleExploded(event: Exploded): void {
   upalaId.save()
 }
 
+/****
+POOLS
+****/
 
-export function handleNewAttackWindow(event: NewAttackWindow): void {}
+export function handleNewPoolFactoryStatus(event: NewPoolFactoryStatus): void {
+  let poolFactory = new PoolFactory(event.params.poolFactory.toHex())
+  poolFactory.isApproved = event.params.isApproved
+  poolFactory.save()
+}
+
+export function handleNewPool(event: NewPool): void {
+  let pool = new Pool(event.params.poolAddress.toHex())
+  let poolFactory = new PoolFactory(event.params.factory.toHex())
+  pool.poolFactory = poolFactory.id
+  pool.owner = event.params.poolManager
+  pool.baseScore = BigInt.fromI32(0)  // todo see uniswap zero helper
+  pool.metadata = ''
+  pool.save()
+  BundledScoresPool.create(event.params.poolAddress)
+}
+
+/****
+DAPPS
+****/
 
 export function handleNewDAppStatus(event: NewDAppStatus): void {}
 
+/****
+UPALA
+****/
+
+export function handleNewAttackWindow(event: NewAttackWindow): void {}
 
 export function handleNewExecutionWindow(event: NewExecutionWindow): void {}
 
 export function handleNewExplosionFeePercent(
   event: NewExplosionFeePercent
 ): void {}
-
-
-
-
-export function handleNewPool(event: NewPool): void {
-  let pool = new Pool(event.params.poolAddress.toHex())
-  // let pool = new Pool(event.transaction.hash.toHex() + "-" + event.logIndex.toString())
-  // pool.poolAddress = event.params.poolAddress
-  pool.poolFactoryAddress = event.params.factory
-  pool.owner = event.params.poolManager
-  pool.baseScore = BigInt.fromI32(0)  // todo see uniswap zero helper
-  pool.metadata = ''
-  pool.isApproved = true
-  pool.save()
-  BundledScoresPool.create(event.params.poolAddress)
-}
-
-export function handleNewPoolFactoryStatus(event: NewPoolFactoryStatus): void {}
 
 export function handleNewTreasury(event: NewTreasury): void {}
 
