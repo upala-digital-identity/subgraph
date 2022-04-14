@@ -46,9 +46,20 @@ type ScoreBundle @entity {
     pool: Pool!
 }
 
-# DApps (future)
+# Admin
+type UpalaSettings @entity {
+    id: ID!
+    attackWindow: BigInt!
+    executionWindow: BigInt!
+    explosionFeePercent: Int!
+    treasury: Bytes!
+    owner: Bytes!
+}
 
-# type DApp @entity {  # need many-to-many relation?
-#    id: ID!  # dapp address
-#    # approvedPools: [Pool!]  # todo one-to-many
-# }
+# DApps
+
+type DApp @entity {
+    id: ID!  # dapp address
+    isRegistered: Boolean!  # dapp can be unregistered
+    approvedPools: [Pool!]
+}

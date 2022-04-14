@@ -19,3 +19,17 @@ export class BundledScoresPool extends DataSourceTemplate {
     );
   }
 }
+
+export class DappContract extends DataSourceTemplate {
+  static create(address: Address): void {
+    DataSourceTemplate.create("DappContract", [address.toHex()]);
+  }
+
+  static createWithContext(address: Address, context: DataSourceContext): void {
+    DataSourceTemplate.createWithContext(
+      "DappContract",
+      [address.toHex()],
+      context
+    );
+  }
+}

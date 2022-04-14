@@ -43,24 +43,24 @@ dataSources:
           handler: handleNewPoolFactoryStatus
         - event: NewPool(address,address,address)
           handler: handleNewPool
-        # Upala
+        # Upala settings
         - event: NewAttackWindow(uint256)
           handler: handleNewAttackWindow
-        - event: NewDAppStatus(address,bool)
-          handler: handleNewDAppStatus
         - event: NewExecutionWindow(uint256)
           handler: handleNewExecutionWindow
         - event: NewExplosionFeePercent(uint8)
           handler: handleNewExplosionFeePercent
-        
-        
         - event: NewTreasury(address)
           handler: handleNewTreasury
         - event: OwnershipTransferred(indexed address,indexed address)
           handler: handleOwnershipTransferred
+        # DApps
+        - event: NewDAppStatus(address,bool)
+          handler: handleNewDAppStatus
       file: ./src/mapping.ts
 
 templates:
+  # Pools
   - name: BundledScoresPool
     kind: ethereum/contract
     network: rinkeby
@@ -88,3 +88,22 @@ templates:
           handler: handleNewBaseScore
         - event: OwnershipTransferred(indexed address,indexed address)
           handler: handleOwnershipTransferred
+  # DApps
+  - name: DappContract
+    kind: ethereum/contract
+    network: rinkeby
+    source:
+      abi: usingUpala
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      file: ./src/dappContract.ts
+      entities:
+        - DappContract
+      abis:
+        - name: usingUpala
+          file: ./abis/usingUpala.json
+      eventHandlers:
+        - event: NewProviderStatus(address,bool)
+          handler: handleNewProviderStatus

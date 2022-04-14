@@ -349,3 +349,148 @@ export class ScoreBundle extends Entity {
     this.set("pool", Value.fromString(value));
   }
 }
+
+export class UpalaSettings extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+
+    this.set("attackWindow", Value.fromBigInt(BigInt.zero()));
+    this.set("executionWindow", Value.fromBigInt(BigInt.zero()));
+    this.set("explosionFeePercent", Value.fromI32(0));
+    this.set("treasury", Value.fromBytes(Bytes.empty()));
+    this.set("owner", Value.fromBytes(Bytes.empty()));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save UpalaSettings entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        "Cannot save UpalaSettings entity with non-string ID. " +
+          'Considering using .toHex() to convert the "id" to a string.'
+      );
+      store.set("UpalaSettings", id.toString(), this);
+    }
+  }
+
+  static load(id: string): UpalaSettings | null {
+    return changetype<UpalaSettings | null>(store.get("UpalaSettings", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get attackWindow(): BigInt {
+    let value = this.get("attackWindow");
+    return value!.toBigInt();
+  }
+
+  set attackWindow(value: BigInt) {
+    this.set("attackWindow", Value.fromBigInt(value));
+  }
+
+  get executionWindow(): BigInt {
+    let value = this.get("executionWindow");
+    return value!.toBigInt();
+  }
+
+  set executionWindow(value: BigInt) {
+    this.set("executionWindow", Value.fromBigInt(value));
+  }
+
+  get explosionFeePercent(): i32 {
+    let value = this.get("explosionFeePercent");
+    return value!.toI32();
+  }
+
+  set explosionFeePercent(value: i32) {
+    this.set("explosionFeePercent", Value.fromI32(value));
+  }
+
+  get treasury(): Bytes {
+    let value = this.get("treasury");
+    return value!.toBytes();
+  }
+
+  set treasury(value: Bytes) {
+    this.set("treasury", Value.fromBytes(value));
+  }
+
+  get owner(): Bytes {
+    let value = this.get("owner");
+    return value!.toBytes();
+  }
+
+  set owner(value: Bytes) {
+    this.set("owner", Value.fromBytes(value));
+  }
+}
+
+export class DApp extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+
+    this.set("isRegistered", Value.fromBoolean(false));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save DApp entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        "Cannot save DApp entity with non-string ID. " +
+          'Considering using .toHex() to convert the "id" to a string.'
+      );
+      store.set("DApp", id.toString(), this);
+    }
+  }
+
+  static load(id: string): DApp | null {
+    return changetype<DApp | null>(store.get("DApp", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get isRegistered(): boolean {
+    let value = this.get("isRegistered");
+    return value!.toBoolean();
+  }
+
+  set isRegistered(value: boolean) {
+    this.set("isRegistered", Value.fromBoolean(value));
+  }
+
+  get approvedPools(): Array<string> | null {
+    let value = this.get("approvedPools");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toStringArray();
+    }
+  }
+
+  set approvedPools(value: Array<string> | null) {
+    if (!value) {
+      this.unset("approvedPools");
+    } else {
+      this.set("approvedPools", Value.fromStringArray(<Array<string>>value));
+    }
+  }
+}

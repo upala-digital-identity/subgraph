@@ -1,25 +1,23 @@
-import { BigInt, store, log } from "@graphprotocol/graph-ts"
+import { BigInt, store, log, dataSource } from "@graphprotocol/graph-ts"
 
 import {
-  Upala,
   NewIdentity,
   NewCandidateDelegate,
   NewDelegate,
   DelegateDeleted,
   NewIdentityOwner,
   Exploded,
-  
-  NewAttackWindow,
-  NewDAppStatus,
-  NewExecutionWindow,
-  NewExplosionFeePercent,
   NewPool,
   NewPoolFactoryStatus,
+  NewDAppStatus,
+  NewAttackWindow,
+  NewExecutionWindow,
+  NewExplosionFeePercent,
   NewTreasury,
-  OwnershipTransferred
+  OwnershipTransferred,
 } from "../generated/Upala/Upala"
-import { UpalaID, Delegate, PoolFactory, Pool } from "../generated/schema"
-import { BundledScoresPool } from '../generated/templates'
+import { UpalaID, Delegate, PoolFactory, Pool, UpalaSettings, DApp } from "../generated/schema"
+import { BundledScoresPool, DappContract } from '../generated/templates'
 
 /******************
 IDENTITY MANAGEMENT
@@ -102,20 +100,54 @@ export function handleNewPool(event: NewPool): void {
 DAPPS
 ****/
 
-export function handleNewDAppStatus(event: NewDAppStatus): void {}
+export function handleNewDAppStatus(event: NewDAppStatus): void {
+  let dappAddress = event.params.dappAddress
+  let isRegistered = event.params.isRegistered  // false if unregistering dapp
+  let dapp = DApp.load(dappAddress.toHex())
+  let needTemplate = false
+  if (!dapp) {
+    dapp = new DApp(dappAddress.toHex())
+    needTemplate = true
+  }
+  dapp.isRegistered = isRegistered
+  dapp.save()
+  if (isRegistered && needTemplate) {
+    DappContract.create(event.params.dappAddress)
+  }
+}
 
 /****
 UPALA
 ****/
 
-export function handleNewAttackWindow(event: NewAttackWindow): void {}
+export function handleNewAttackWindow(event: NewAttackWindow): void {
+  let upala = new UpalaSettings('1')
+  upala.attackWindow = event.params.newWindow
+  upala.save()
+}
 
-export function handleNewExecutionWindow(event: NewExecutionWindow): void {}
+export function handleNewExecutionWindow(event: NewExecutionWindow): void {
+  let upala = new UpalaSettings('1')
+  upala.executionWindow = event.params.newWindow
+  upala.save()
+}
 
 export function handleNewExplosionFeePercent(
   event: NewExplosionFeePercent
-): void {}
+): void {
+  let upala = new UpalaSettings('1')
+  upala.explosionFeePercent = event.params.newFee
+  upala.save()
+}
 
-export function handleNewTreasury(event: NewTreasury): void {}
+export function handleNewTreasury(event: NewTreasury): void {
+  let upala = new UpalaSettings('1')
+  upala.treasury = event.params.newTreasury
+  upala.save()
+}
 
-export function handleOwnershipTransferred(event: OwnershipTransferred): void {}
+export function handleOwnershipTransferred(event: OwnershipTransferred): void {
+  let upala = new UpalaSettings('1')
+  upala.owner = event.params.newOwner
+  upala.save()
+}
