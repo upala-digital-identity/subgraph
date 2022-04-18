@@ -59,6 +59,28 @@ dataSources:
           handler: handleNewDAppStatus
       file: ./src/mapping.ts
 
+  # Pool balances
+  - kind: ethereum
+    name: ERC20
+    network: rinkeby
+    source:
+      address: "0xc23B9A9517fAcd62c94723bB6F26D37d72a4e775"
+      abi: ERC20
+      startBlock: 10455600
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Pool
+      abis:
+        - name: ERC20
+          file: ./abis/ERC20.json
+      eventHandlers:
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleTransfer
+      file: ./src/mapping.ts
+
 templates:
   # Pools
   - name: BundledScoresPool
@@ -88,6 +110,7 @@ templates:
           handler: handleNewBaseScore
         - event: OwnershipTransferred(indexed address,indexed address)
           handler: handleOwnershipTransferred
+  
   # DApps
   - name: DappContract
     kind: ethereum/contract

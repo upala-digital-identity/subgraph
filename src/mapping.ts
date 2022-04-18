@@ -16,6 +16,7 @@ import {
   NewTreasury,
   OwnershipTransferred,
 } from "../generated/Upala/Upala"
+import { Transfer } from "../generated/ERC20/ERC20"
 import { UpalaID, Delegate, PoolFactory, Pool, UpalaSettings, DApp } from "../generated/schema"
 import { BundledScoresPool, DappContract } from '../generated/templates'
 
@@ -90,10 +91,29 @@ export function handleNewPool(event: NewPool): void {
   let poolFactory = new PoolFactory(event.params.factory.toHex())
   pool.poolFactory = poolFactory.id
   pool.owner = event.params.poolManager
-  pool.baseScore = BigInt.fromI32(0)  // todo see uniswap zero helper
+  pool.baseScore = BigInt.fromI32(0)  // todo see uniswap's zero helper
+  pool.balance = BigInt.fromI32(0)  // todo see uniswap's zero helper
   pool.metadata = ''
   pool.save()
   BundledScoresPool.create(event.params.poolAddress)
+}
+
+// checks if pools exist and updates balances accordingly
+// pool can be funded by another pool
+export function handleTransfer(event: Transfer): void {
+  let from = event.params.from
+  let to = event.params.to
+  let fromPool = Pool.load(from.toHex())
+  let toPool = Pool.load(to.toHex())
+  let value = event.params.value
+  if (fromPool) {
+    fromPool.balance = fromPool.balance.minus(value)
+    fromPool.save()
+  }
+  if (toPool) {
+    toPool.balance = toPool.balance.plus(value)
+    toPool.save()
+  }
 }
 
 /****

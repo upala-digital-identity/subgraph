@@ -32,9 +32,9 @@ type Pool @entity {
     owner: Bytes!
     
     # base score
-    baseScore: BigInt  # uint256
+    baseScore: BigInt!  # uint256
     # monitors DAI contract transfer event (todo - isn't it beter to check DAI)
-    # balance:  BigInt  # uint256
+    balance:  BigInt!  # uint256
     metadata: String  # metadata json
     scoreBundles: [ScoreBundle!]! @derivedFrom(field: "pool")
 }
