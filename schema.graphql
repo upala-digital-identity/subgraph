@@ -47,7 +47,7 @@ type ScoreBundle @entity {
 }
 
 # Admin
-type UpalaSettings @entity {
+type Protocol @entity {
     id: ID!
     attackWindow: BigInt!
     executionWindow: BigInt!

@@ -17,7 +17,7 @@ import {
   OwnershipTransferred,
 } from "../generated/Upala/Upala"
 import { Transfer } from "../generated/ERC20/ERC20"
-import { UpalaID, Delegate, PoolFactory, Pool, UpalaSettings, DApp } from "../generated/schema"
+import { UpalaID, Delegate, PoolFactory, Pool, Protocol, DApp } from "../generated/schema"
 import { BundledScoresPool, DappContract } from '../generated/templates'
 
 /******************
@@ -39,15 +39,19 @@ export function handleNewIdentity(event: NewIdentity): void {
 // will also rewrite existing delegate if candidate choses another UpalaID 
 export function handleNewCandidateDelegate(event: NewCandidateDelegate): void {
   let delegate = new Delegate(event.params.delegate.toHex())
-  let upalaId = new UpalaID(event.params.upalaId.toHex())
-  delegate.upalaID = upalaId.id
+  delegate.upalaID = event.params.upalaId.toHex()
   delegate.isOwner = false  // per Upala contract owner cannot delegate to oneself (always false here)
   delegate.isApproved = false
   delegate.save()
 }
 
 export function handleNewDelegate(event: NewDelegate): void {
-  let delegate = new Delegate(event.params.delegate.toHex())
+  let delegateAddress = event.params.delegate.toHex()
+  let delegate = Delegate.load(delegateAddress)
+  if (!delegate) {
+    delegate = new Delegate(delegateAddress)
+    log.error('Could not load delegate by address: {}', [delegateAddress])
+  }
   delegate.isApproved = true
   delegate.save()
 }
@@ -58,9 +62,18 @@ export function handleDelegateDeleted(event: DelegateDeleted): void {
 }
 
 export function handleNewIdentityOwner(event: NewIdentityOwner): void {
-  let upalaId = new UpalaID(event.params.upalaId.toHex())
-  let oldOwner = new Delegate(event.params.oldOwner.toHex())
-  let newOwner = new Delegate(event.params.newOwner.toHex())
+  let upalaId = UpalaID.load(event.params.upalaId.toHex())
+  if (!upalaId) {
+    upalaId = new UpalaID(event.params.upalaId.toHex())
+  }
+  let oldOwner = Delegate.load(event.params.oldOwner.toHex())
+  if (!oldOwner) {
+    oldOwner = new Delegate(event.params.oldOwner.toHex())
+  }
+  let newOwner = Delegate.load(event.params.newOwner.toHex())
+  if (!newOwner) {
+    newOwner = new Delegate(event.params.newOwner.toHex())
+  }
   oldOwner.isOwner = false
   newOwner.isOwner = true
   upalaId.owner = newOwner.id
@@ -70,8 +83,10 @@ export function handleNewIdentityOwner(event: NewIdentityOwner): void {
 }
 
 export function handleExploded(event: Exploded): void {
-  // as we don't need any data from entity, we just create new instance
-  let upalaId = new UpalaID(event.params.upalaId.toHex())
+  let upalaId = UpalaID.load(event.params.upalaId.toHex())
+  if (!upalaId) {
+    upalaId = new UpalaID(event.params.upalaId.toHex())
+  }
   upalaId.isExploded = true
   upalaId.save()
 }
@@ -81,24 +96,29 @@ POOLS
 ****/
 
 export function handleNewPoolFactoryStatus(event: NewPoolFactoryStatus): void {
-  let poolFactory = new PoolFactory(event.params.poolFactory.toHex())
+  let poolFactory = PoolFactory.load(event.params.poolFactory.toHex())
+  if (!poolFactory) {
+    poolFactory = new PoolFactory(event.params.poolFactory.toHex())
+  }
   poolFactory.isApproved = event.params.isApproved
   poolFactory.save()
 }
 
 export function handleNewPool(event: NewPool): void {
-  let pool = new Pool(event.params.poolAddress.toHex())
-  let poolFactory = new PoolFactory(event.params.factory.toHex())
-  pool.poolFactory = poolFactory.id
+  let pool = Pool.load(event.params.poolAddress.toHex())
+  if (!pool) {
+    pool = new Pool(event.params.poolAddress.toHex())
+  }
+  pool.poolFactory = event.params.factory.toHex()
   pool.owner = event.params.poolManager
   pool.baseScore = BigInt.fromI32(0)  // todo see uniswap's zero helper
-  pool.balance = BigInt.fromI32(0)  // todo see uniswap's zero helper
+  pool.balance = BigInt.fromI32(0)  // todo set to 0 todo see uniswap's zero helper
   pool.metadata = ''
   pool.save()
   BundledScoresPool.create(event.params.poolAddress)
 }
 
-// checks if pools exist and updates balances accordingly
+// checks if pools exist and updates DAI balances accordingly
 // pool can be funded by another pool
 export function handleTransfer(event: Transfer): void {
   let from = event.params.from
@@ -141,13 +161,19 @@ UPALA
 ****/
 
 export function handleNewAttackWindow(event: NewAttackWindow): void {
-  let upala = new UpalaSettings('1')
+  let upala = Protocol.load('1')
+  if (!upala) {
+    upala = new Protocol('1')
+  }
   upala.attackWindow = event.params.newWindow
   upala.save()
 }
 
 export function handleNewExecutionWindow(event: NewExecutionWindow): void {
-  let upala = new UpalaSettings('1')
+  let upala = Protocol.load('1')
+  if (!upala) {
+    upala = new Protocol('1')
+  }
   upala.executionWindow = event.params.newWindow
   upala.save()
 }
@@ -155,19 +181,28 @@ export function handleNewExecutionWindow(event: NewExecutionWindow): void {
 export function handleNewExplosionFeePercent(
   event: NewExplosionFeePercent
 ): void {
-  let upala = new UpalaSettings('1')
+  let upala = Protocol.load('1')
+  if (!upala) {
+    upala = new Protocol('1')
+  }
   upala.explosionFeePercent = event.params.newFee
   upala.save()
 }
 
 export function handleNewTreasury(event: NewTreasury): void {
-  let upala = new UpalaSettings('1')
+  let upala = Protocol.load('1')
+  if (!upala) {
+    upala = new Protocol('1')
+  }
   upala.treasury = event.params.newTreasury
   upala.save()
 }
 
 export function handleOwnershipTransferred(event: OwnershipTransferred): void {
-  let upala = new UpalaSettings('1')
+  let upala = Protocol.load('1')
+  if (!upala) {
+    upala = new Protocol('1')
+  }
   upala.owner = event.params.newOwner
   upala.save()
 }

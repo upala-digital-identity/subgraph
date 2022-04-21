@@ -29,8 +29,7 @@ export function handleNewScoreBundleId(event: NewScoreBundleId): void {
 
 export function handleScoreBundleIdDeleted(event: ScoreBundleIdDeleted): void {
     let scoreBundleId = event.params.scoreBundleId.toHex()
-    // creating new instance (per Grpah docs it is faster than loading)
-    let scoreBundle = new ScoreBundle(scoreBundleId)
+    let scoreBundle = ScoreBundle.load(scoreBundleId)
     if (scoreBundle != null) {
         scoreBundle.isDeleted = true
         scoreBundle.save()
@@ -41,8 +40,10 @@ export function handleScoreBundleIdDeleted(event: ScoreBundleIdDeleted): void {
 
 export function handleNewBaseScore(event: NewBaseScore): void {
     let poolAddress = event.address.toHex()
-    // creating new instance (per Grpah docs it is faster than loading)
-    let pool = new Pool(poolAddress)
+    let pool = Pool.load(poolAddress)
+    if (!pool) {
+        pool = new Pool(poolAddress)
+    }
     if (pool != null) {
         pool.baseScore = event.params.newBaseScore
         pool.save()

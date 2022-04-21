@@ -9,9 +9,9 @@ dataSources:
     name: Upala
     network: rinkeby
     source:
-      address: "0xDee8F427d582cAF4c437558296398C9FA3a0c8B2"
+      address: "0x59FcEd8395A4d97F0b9F9e1Fd43C4B0C9ff71e53"
       abi: Upala
-      startBlock: 10455600
+      startBlock: 10541514
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
@@ -64,9 +64,9 @@ dataSources:
     name: ERC20
     network: rinkeby
     source:
-      address: "0xc23B9A9517fAcd62c94723bB6F26D37d72a4e775"
+      address: "0xbC0dFaA78fe7bc8248b9F857292f680a1630b0C5"
       abi: ERC20
-      startBlock: 10455600
+      startBlock: 10541514
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
