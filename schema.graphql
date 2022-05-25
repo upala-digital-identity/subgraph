@@ -2,7 +2,7 @@
 
 type UpalaID @entity {
     id: ID!  # user Upala ID
-    isExploded: Boolean!
+    isLiquidated: Boolean!
     owner: Delegate!
     delegates: [Delegate!]! @derivedFrom(field: "upalaID")
 }
@@ -51,7 +51,7 @@ type Protocol @entity {
     id: ID!
     attackWindow: BigInt!
     executionWindow: BigInt!
-    explosionFeePercent: Int!
+    liquidationFeePercent: Int!
     treasury: Bytes!
     owner: Bytes!
 }

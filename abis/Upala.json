@@ -32,7 +32,7 @@
           "type": "address"
         }
       ],
-      "name": "Exploded",
+      "name": "Liquidated",
       "type": "event"
     },
     {
@@ -361,7 +361,7 @@
     },
     {
       "inputs": [],
-      "name": "explosionFeePercent",
+      "name": "liquidationFeePercent",
       "outputs": [
         {
           "internalType": "uint8",

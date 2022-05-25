@@ -6,13 +6,13 @@ import {
   NewDelegate,
   DelegateDeleted,
   NewIdentityOwner,
-  Exploded,
+  Liquidated,
   NewPool,
   NewPoolFactoryStatus,
   NewDAppStatus,
   NewAttackWindow,
   NewExecutionWindow,
-  NewExplosionFeePercent,
+  NewLiquidationFeePercent,
   NewTreasury,
   OwnershipTransferred,
 } from "../generated/Upala/Upala"
@@ -26,7 +26,7 @@ IDENTITY MANAGEMENT
 
 export function handleNewIdentity(event: NewIdentity): void {
   let upalaId = new UpalaID(event.params.upalaId.toHex())
-  upalaId.isExploded = false
+  upalaId.isLiquidated = false
   let delegate = new Delegate(event.params.owner.toHex())
   delegate.upalaID = upalaId.id
   delegate.isOwner = true
@@ -82,12 +82,12 @@ export function handleNewIdentityOwner(event: NewIdentityOwner): void {
   newOwner.save()
 }
 
-export function handleExploded(event: Exploded): void {
+export function handleLiquidated(event: Liquidated): void {
   let upalaId = UpalaID.load(event.params.upalaId.toHex())
   if (!upalaId) {
     upalaId = new UpalaID(event.params.upalaId.toHex())
   }
-  upalaId.isExploded = true
+  upalaId.isLiquidated = true
   upalaId.save()
 }
 
@@ -156,9 +156,12 @@ export function handleNewDAppStatus(event: NewDAppStatus): void {
   }
 }
 
-/****
-UPALA
-****/
+/*************
+UPALA SETTINGS
+*************/
+// Todo Emitted when the pause is lifted by `account`.
+// event Paused(address account);
+// event Unpaused(address account);
 
 export function handleNewAttackWindow(event: NewAttackWindow): void {
   let upala = Protocol.load('1')
@@ -178,14 +181,14 @@ export function handleNewExecutionWindow(event: NewExecutionWindow): void {
   upala.save()
 }
 
-export function handleNewExplosionFeePercent(
-  event: NewExplosionFeePercent
+export function handleNewLiquidationFeePercent(
+  event: NewLiquidationFeePercent
 ): void {
   let upala = Protocol.load('1')
   if (!upala) {
     upala = new Protocol('1')
   }
-  upala.explosionFeePercent = event.params.newFee
+  upala.liquidationFeePercent = event.params.newFee
   upala.save()
 }
 

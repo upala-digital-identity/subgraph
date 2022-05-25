@@ -36,8 +36,8 @@ dataSources:
           handler: handleDelegateDeleted
         - event: NewIdentityOwner(address,address,address)
           handler: handleNewIdentityOwner
-        - event: Exploded(address)
-          handler: handleExploded
+        - event: Liquidated(address)
+          handler: handleLiquidated
         # Pools
         - event: NewPoolFactoryStatus(address,bool)
           handler: handleNewPoolFactoryStatus
@@ -48,8 +48,8 @@ dataSources:
           handler: handleNewAttackWindow
         - event: NewExecutionWindow(uint256)
           handler: handleNewExecutionWindow
-        - event: NewExplosionFeePercent(uint8)
-          handler: handleNewExplosionFeePercent
+        - event: NewLiquidationFeePercent(uint8)
+          handler: handleNewLiquidationFeePercent
         - event: NewTreasury(address)
           handler: handleNewTreasury
         - event: OwnershipTransferred(indexed address,indexed address)
